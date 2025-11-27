@@ -1,38 +1,49 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useState } from "react";
 
-import { toast } from 'react-toastify';
-import { useParams } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
+const FormSearch = ({ title, handleSearch, handleOnchange }) => {
+    const [keyword, setKeyword] = useState("");
 
+    const onSubmit = (event) => {
+        event.preventDefault();
+        handleSearch(keyword);
+    };
 
-const FormSearch = (props) => {
-    const [keyword, setkeyword] = useState('')
+    const onChange = (value) => {
+        setKeyword(value);
+        handleOnchange(value);
+    };
 
-    let handleSearchProduct = () =>{
-        props.handleSearch(keyword)
-    }
-    let handleOnchange = (keyword)=>{
-        setkeyword(keyword)
-        props.handleOnchange(keyword)
-    }
-
+    const clearKeyword = () => {
+        setKeyword("");
+        handleOnchange("");
+    };
 
     return (
-        <form   >
-        <div className="form-group">
-            <div className="input-group mb-3">
-                <input onChange={(e) => handleOnchange(e.target.value)} value={keyword} type="text" className="form-control" placeholder={`Tìm kiếm theo ${props.title}`} />
-                <div className="input-group-append">
-                    <button onClick={() =>handleSearchProduct()}  className="btn" type="button"><i className="ti-search" /></button>
-                </div>
+        <form className="shop-search" onSubmit={onSubmit}>
+            <div className="search-field">
+                <i className="ti-search" />
+                <input
+                    value={keyword}
+                    onChange={(e) => onChange(e.target.value)}
+                    type="text"
+                    placeholder={`Tìm theo ${title}`}
+                />
+                {keyword && (
+                    <button
+                        type="button"
+                        className="clear-btn"
+                        onClick={clearKeyword}
+                        aria-label="Xóa tìm kiếm"
+                    >
+                        ×
+                    </button>
+                )}
             </div>
-        </div>
-        
+            <button type="submit" className="btn-primary">
+                Tìm kiếm
+            </button>
         </form>
-    )
-}
+    );
+};
+
 export default FormSearch;
-
-
-

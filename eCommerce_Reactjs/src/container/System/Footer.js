@@ -5,7 +5,7 @@ const Footer = () => {
         <footer className="py-4 bg-light mt-auto">
             <div className="container-fluid px-4">
                 <div className="d-flex align-items-center justify-content-between small">
-                    <div className="text-muted">Bản quyền © Thân Quốc Thắng &</div>
+                    <div className="text-muted">Bản quyền © Thân Quốc Thắng & Nguyễn Thành Tâm</div>
                     
                 </div>
             </div>

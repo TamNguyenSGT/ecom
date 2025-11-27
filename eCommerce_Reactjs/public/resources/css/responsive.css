@@ -381,7 +381,7 @@
 	/* End Home Banner Area css
 	============================================================================================ */
 	.p_120 {
-		padding-top: 70px;
+		padding-top: 40px;
 		padding-bottom: 70px;
 	}
 	.main_title h2 {
@@ -418,14 +418,14 @@
 	/* End End Footer Area css
 	============================================================================================ */
 	.pad_top {
-		padding-top: 70px;
+		padding-top: 40px;
 	}
 	.gallery_f_inner{
 		max-width: 340px;
 		margin: 0px auto -30px; 
 	}
 	.h_form_inner h4 {
-		padding-top: 70px;
+		padding-top: 40px;
 		padding-bottom: 40px;
 		font-size: 30px;
 	}
@@ -439,7 +439,7 @@
 		margin-top: 50px;
 	}
 	.timer_area {
-		padding-top: 70px;
+		padding-top: 40px;
 		padding-bottom: 70px;
 	}
 	.f_p_item {
@@ -456,14 +456,14 @@
 		text-align: left;
 	}
 	.most_product_area .main_box {
-		padding-top: 70px;
+		padding-top: 40px;
 		padding-bottom: 70px;
 	}
 	.banner_area .banner_inner .banner_content h2 {
 		margin-top: 20px;
 	}
 	.product_image_area {
-		padding-top: 70px;
+		padding-top: 40px;
 	}
 	
 }

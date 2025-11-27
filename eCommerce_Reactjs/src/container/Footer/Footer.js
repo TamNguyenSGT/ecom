@@ -1,64 +1,124 @@
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Footer.css";
 
-function Footer() {
-  return (
-    <footer className="footer-area section_gap bg-dark text-light py-5">
-      <div className="container">
-        <div className="row">
-          {/* Top Products */}
-          <div className="col-lg-3 col-md-6 mb-4 single-footer-widget">
-            <h4 className="text-uppercase mb-3">Top Products</h4>
-            <ul className="list-unstyled">
-              <li><a className="text-light text-decoration-none" href="#">Managed Website</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Manage Reputation</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Power Tools</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Marketing Service</a></li>
-            </ul>
-          </div>
+const footerColumns = [
+    {
+        title: "Khám phá",
+        links: [
+            { label: "Sản phẩm mới", href: "/shop" },
+            { label: "Bán chạy", href: "/shop" },
+            { label: "Bộ sưu tập độc quyền", href: "/shop" },
+            { label: "Chương trình thành viên", href: "/voucher" },
+        ],
+    },
+    {
+        title: "Dịch vụ",
+        links: [
+            { label: "Theo dõi đơn hàng", href: "/user" },
+            { label: "Trung tâm hỗ trợ", href: "/user/messenger" },
+            { label: "Đổi / trả hàng", href: "/user" },
+            { label: "Tư vấn stylist", href: "/user/messenger" },
+        ],
+    },
+    {
+        title: "Về chúng tôi",
+        links: [
+            { label: "Câu chuyện thương hiệu", href: "/about" },
+            { label: "Tin tức & Blog", href: "/blog" },
+            { label: "Liên hệ hợp tác", href: "/about" },
+            { label: "Tuyển dụng", href: "/about" },
+        ],
+    },
+];
 
-          {/* Quick Links */}
-          <div className="col-lg-3 col-md-6 mb-4 single-footer-widget">
-            <h4 className="text-uppercase mb-3">Quick Links</h4>
-            <ul className="list-unstyled">
-              <li><a className="text-light text-decoration-none" href="#">Jobs</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Brand Assets</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Investor Relations</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Terms of Service</a></li>
-            </ul>
-          </div>
+const socialLinks = [
+    { icon: "fa-brands fa-facebook-f", href: "https://facebook.com" },
+    { icon: "fa-brands fa-instagram", href: "https://instagram.com" },
+    { icon: "fa-brands fa-tiktok", href: "https://tiktok.com" },
+    { icon: "fa-brands fa-youtube", href: "https://youtube.com" },
+];
 
-          {/* Features */}
-          <div className="col-lg-3 col-md-6 mb-4 single-footer-widget">
-            <h4 className="text-uppercase mb-3">Features</h4>
-            <ul className="list-unstyled">
-              <li><a className="text-light text-decoration-none" href="#">Jobs</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Brand Assets</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Investor Relations</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Terms of Service</a></li>
-            </ul>
-          </div>
+const Footer = () => {
+    const handleSubscribe = (event) => {
+        event.preventDefault();
+    };
 
-          {/* Resources */}
-          <div className="col-lg-3 col-md-6 mb-4 single-footer-widget">
-            <h4 className="text-uppercase mb-3">Resources</h4>
-            <ul className="list-unstyled">
-              <li><a className="text-light text-decoration-none" href="#">Guides</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Research</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Experts</a></li>
-              <li><a className="text-light text-decoration-none" href="#">Agencies</a></li>
-            </ul>
-          </div>
-        </div>
+    return (
+        <footer className="neo-footer">
+            <div className="page-shell">
+                <div className="footer-grid">
+                    <div className="footer-brand">
+                        <span className="footer-badge">Nike Studio</span>
+                        <h3>Không gian thời trang cho thế hệ mới.</h3>
+                        <p>
+                            Chúng tôi giúp bạn xây dựng phong cách thăng hoa
+                            với công nghệ, trải nghiệm mua sắm cá nhân hóa và
+                            dịch vụ tận tâm 24/7.
+                        </p>
+                        <div className="footer-social">
+                            {socialLinks.map((item) => (
+                                <a
+                                    key={item.icon}
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    aria-label={item.icon}
+                                >
+                                    <i className={item.icon} />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
 
-        {/* Footer Bottom */}
-        <div className="footer-bottom row mt-4">
-          <p className="footer-text m-0 col-lg-12 text-center">
-            Bản quyền ©2025 Đồ án tốt nghiệp của <b>Thân Quốc Thắng</b> và <b>Nguyễn Thành Tâm</b> ❤️
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
+                    {footerColumns.map((column) => (
+                        <div className="footer-column" key={column.title}>
+                            <h4>{column.title}</h4>
+                            <ul>
+                                {column.links.map((link) => (
+                                    <li key={link.label}>
+                                        <Link to={link.href}>{link.label}</Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+
+                    <div className="footer-column newsletter">
+                        <h4>Nhận thông báo ưu đãi</h4>
+                        <p>
+                            Tối ưu tủ đồ và nhận quyền lợi độc quyền vào mỗi
+                            thứ Hai hàng tuần.
+                        </p>
+                        <form onSubmit={handleSubscribe}>
+                            <input
+                                type="email"
+                                placeholder="Email của bạn"
+                                required
+                            />
+                            <button type="submit">Đăng ký</button>
+                        </form>
+                        <small>
+                            Khi đăng ký, bạn đồng ý với chính sách bảo mật của
+                            chúng tôi.
+                        </small>
+                    </div>
+                </div>
+
+                <div className="footer-bottom">
+                    <p>
+                        Copyright {new Date().getFullYear()} Nike Studio.
+                        Đồ án tốt nghiệp của Thân Quốc Thắng và Nguyễn Thành Tâm.
+                    </p>
+                    <div className="footer-bottom-links">
+                        <Link to="/about">Điều khoản</Link>
+                        <Link to="/about">Bảo mật</Link>
+                        <Link to="/user/messenger">Hỗ trợ</Link>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+};
 
 export default Footer;

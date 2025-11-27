@@ -1,27 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-function HomeBlogItem(props) {
+function HomeBlogItem({ data }) {
+    const author = `${data.userData.firstName} ${data.userData.lastName}`;
     return (
         <div className="col-lg-4 col-md-6">
             <div className="single-blog">
-                <div className="thumb">
-                    <img style={{width:'350px', height:'243px', objectFit:'cover', cursor:'pointer'}} className="img-fluid" src={props.data.image} alt="" />
-                </div>
+                <Link to={`/blog-detail/${data.id}`} className="thumb">
+                    <img src={data.image} alt={data.title} loading="lazy" />
+                </Link>
                 <div className="short_details">
-                    <div className="meta-top d-flex">
-                        <a >{props.data.userData.firstName +" "+props.data.userData.lastName}</a>
-                        <a ><i className="ti-comments-smiley" />{props.data.commentData.length} Bình luận</a>
+                    <div className="meta-top">
+                        <span>{author}</span>
+                        <span>
+                            <i className="ti-comments-smiley" />{" "}
+                            {data.commentData.length} bình luận
+                        </span>
                     </div>
-                    <Link className="d-block" to={`/blog-detail/${props.data.id}`}>
-                        <h4>{props.data.title}</h4>
+                    <Link className="d-block" to={`/blog-detail/${data.id}`}>
+                        <h4>{data.title}</h4>
                     </Link>
                     <div className="text-wrap">
-                        <p>
-                            {props.data.description}
-                        </p>
+                        <p>{data.description}</p>
                     </div>
-                    <a  className="blog_btn">Xem thêm<span className="ml-2 ti-arrow-right" /></a>
+                    <Link
+                        className="blog_btn"
+                        to={`/blog-detail/${data.id}`}
+                    >
+                        Đọc tiếp
+                        <span className="ml-2 ti-arrow-right" />
+                    </Link>
                 </div>
             </div>
         </div>

@@ -1,26 +1,22 @@
-import React from 'react';
-import HeaderContent from '../Content/HeaderContent';
-import HomeBlogItem from './HomeBlogItem';
-function HomeBlog(props) {
-    return (
-        <section className="blog-area section-gap">
-            <div className="container">
-                <HeaderContent mainContent="Blog mới đăng" infoContent="Những bài blog về thời trang mới nhất"></HeaderContent>
-                <div className="row">
-                    {props.data && props.data.length > 0 &&
-                        props.data.map((item,index) =>{
-                            return(
-                                <HomeBlogItem data={item}/>
-                            )
-                        })
-                    }
-                   
+import React from "react";
+import HeaderContent from "../Content/HeaderContent";
+import HomeBlogItem from "./HomeBlogItem";
 
-                   
+function HomeBlog({ data = [] }) {
+    return (
+        <section className="blog-area page-section">
+            <div className="page-shell">
+                <HeaderContent
+                    mainContent="Nhật ký phong cách"
+                    infoContent="Những câu chuyện, cảm hứng và bí quyết phối đồ từ Nike Studio."
+                />
+                <div className="row">
+                    {data.map((item) => (
+                        <HomeBlogItem key={item.id} data={item} />
+                    ))}
                 </div>
             </div>
         </section>
-
     );
 }
 

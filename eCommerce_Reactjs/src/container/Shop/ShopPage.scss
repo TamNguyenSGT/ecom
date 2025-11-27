@@ -1,16 +1,73 @@
-.banner_title {
-  font-family: "Poppins", sans-serif; /* font hiện đại */
-  font-size: 32px;                    /* chữ to rõ */
-  font-weight: 800;                   /* đậm */
-  color: #000000;                     /* xám đậm sang trọng */
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
+.shop-hero {
+  background: linear-gradient(135deg, rgba(67, 56, 255, 0.08), rgba(15, 23, 42, 0.05));
+  padding: clamp(5px, 5vw, 5px) 0 20px;
 }
 
-.banner_subtitle {
-  font-family: "Inter", sans-serif;   /* font dễ đọc */
-  font-size: 17px;                    /* vừa phải */
-  font-weight: 400;
-  color: #000000;                     /* xám trung tính */
-  line-height: 1.5;
+.shop-hero .page-shell {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+}
+
+.shop-hero .hero-content h1 {
+  font-size: clamp(32px, 4vw, 54px);
+  margin: 12px 0 16px;
+  color: var(--text-strong);
+}
+
+.shop-hero .hero-content p {
+  color: var(--text-muted);
+  font-size: 18px;
+  max-width: 600px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 20px;
+  font-weight: 600;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.hero-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+}
+
+.hero-breadcrumb a {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.shop-layout .layout-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+}
+
+.shop-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .shop-layout .layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .shop-hero .page-shell {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
 }

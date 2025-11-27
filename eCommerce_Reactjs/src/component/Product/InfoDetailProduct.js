@@ -6,204 +6,194 @@ import { toast } from 'react-toastify';
 import { addItemCartStart } from '../../action/ShopCartAction';
 import './InfoDetailProduct.scss';
 import CommonUtils from '../../utils/CommonUtils';
+
 function InfoDetailProduct(props) {
-    let { dataProduct } = props
-    let [arrDetail, setarrDetail] = useState([])
-    const [productDetail, setproductDetail] = useState([])
-    const [isOpen, setisOpen] = useState(false)
-    const [imgPreview, setimgPreview] = useState('')
-    const [activeLinkId, setactiveLinkId] = useState('')
-    const [quantity, setquantity] = useState('')
-    const [quantityProduct, setquantityProduct] = useState(1)
+    const { dataProduct } = props;
+    const [arrDetail, setarrDetail] = useState([]);
+    const [productDetail, setproductDetail] = useState([]);
+    const [isOpen, setisOpen] = useState(false);
+    const [imgPreview, setimgPreview] = useState('');
+    const [activeLinkId, setactiveLinkId] = useState('');
+    const [quantity, setquantity] = useState(0);
+    const [quantityProduct, setquantityProduct] = useState(1);
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
+
     useEffect(() => {
+        const { productDetail } = dataProduct ? dataProduct : [];
 
-        let { productDetail } = dataProduct ? dataProduct : []
+        if (productDetail && productDetail.length > 0) {
+            setproductDetail(productDetail);
+            setarrDetail(productDetail[0]);
 
-        if (productDetail) {
-            setproductDetail(productDetail)
-
-            setarrDetail(productDetail[0])
-            setactiveLinkId(productDetail[0].productDetailSize[0].id)
-            setquantity(productDetail[0].productDetailSize[0].stock)
-
-            props.sendDataFromInforDetail(productDetail[0].productDetailSize[0])
+            if (productDetail[0].productDetailSize && productDetail[0].productDetailSize[0]) {
+                const firstSize = productDetail[0].productDetailSize[0];
+                setactiveLinkId(firstSize.id);
+                setquantity(firstSize.stock);
+                props.sendDataFromInforDetail(firstSize);
+            }
+            setActiveImageIndex(0);
         }
-    }, [props.dataProduct])
+    }, [dataProduct]);
 
-    let handleSelectDetail = (event) => {
-        setarrDetail(productDetail[event.target.value])
-        if (productDetail[event.target.value] && productDetail[event.target.value].productDetailSize.length > 0) {
-            setactiveLinkId(productDetail[event.target.value].productDetailSize[0].id)
-            setquantity(productDetail[event.target.value].productDetailSize[0].stock)
-            props.sendDataFromInforDetail(productDetail[event.target.value].productDetailSize[0])
+    const handleSelectDetail = (event) => {
+        const nextDetail = productDetail[event.target.value];
+        setarrDetail(nextDetail);
+        if (nextDetail && nextDetail.productDetailSize && nextDetail.productDetailSize.length > 0) {
+            const firstSize = nextDetail.productDetailSize[0];
+            setactiveLinkId(firstSize.id);
+            setquantity(firstSize.stock);
+            props.sendDataFromInforDetail(firstSize);
         }
+        setActiveImageIndex(0);
+    };
 
-    }
-    let openPreviewImage = (url) => {
-
-
+    const openPreviewImage = (url) => {
+        if (!url) return;
         setimgPreview(url);
         setisOpen(true);
+    };
 
-    }
-    let handleClickBoxSize = (data) => {
+    const handleClickBoxSize = (data) => {
+        setactiveLinkId(data.id);
+        setquantity(data.stock);
+        props.sendDataFromInforDetail(data);
+    };
 
-        setactiveLinkId(data.id)
-        setquantity(data.stock)
-        props.sendDataFromInforDetail(data)
-    }
-    const dispatch = useDispatch()
-    let handleAddShopCart = () => {
+    const dispatch = useDispatch();
+
+    const handleAddShopCart = () => {
         if (props.userId) {
-            dispatch(addItemCartStart({
-                userId: props.userId,
-                productdetailsizeId: activeLinkId,
-                quantity: quantityProduct,
-            }))
+            dispatch(
+                addItemCartStart({
+                    userId: props.userId,
+                    productdetailsizeId: activeLinkId,
+                    quantity: quantityProduct,
+                })
+            );
         } else {
-            toast.error("Đăng nhập để thêm vào giỏ hàng")
+            toast.error('Dang nhap de them vao gio hang');
         }
+    };
 
-    }
+    const handleChangeQuantity = (event) => {
+        const value = Math.max(1, Number(event.target.value) || 1);
+        setquantityProduct(value);
+    };
+
+    const images = arrDetail?.productImage || [];
+    const activeImage =
+        images && images.length > 0
+            ? images[Math.min(activeImageIndex, images.length - 1)]
+            : null;
+
     return (
-
-
-        <div className="row s_product_inner">
-            <div className="col-lg-6">
-                <div className="s_product_img">
-                    <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
-                        <div>
-                            <ol className="carousel-indicators">
-                                {arrDetail && arrDetail.productImage && arrDetail.productImage.length > 0 &&
-                                    arrDetail.productImage.map((item, index) => {
-                                        if (index === 0) {
-                                            return (
-                                                <li data-target="#carouselExampleIndicators" data-slide-to={index} className="active">
-                                                    <img height="60px" className="w-100" src={item.image} alt="" />
-                                                </li>
-                                            )
-                                        } else {
-                                            return (
-                                                <li data-target="#carouselExampleIndicators" data-slide-to={index} className="">
-                                                    <img height="60px" className="w-100" src={item.image} alt="" />
-                                                </li>
-                                            )
-                                        }
-
-                                    })
-                                }
-
-
-                            </ol>
+        <div className="detail-hero surface-card">
+            <div className="detail-media">
+                <div
+                    className="detail-main"
+                    onClick={() => activeImage && openPreviewImage(activeImage.image)}
+                    style={{ cursor: activeImage ? 'pointer' : 'default' }}
+                >
+                    {activeImage ? (
+                        <img src={activeImage.image} alt={dataProduct?.name || 'Anh san pham'} />
+                    ) : (
+                        <div className="placeholder">
+                            <p>Chưa có hình ảnh</p>
                         </div>
-                        <div className="carousel-inner">
+                    )}
+                </div>
+                {images && images.length > 1 && (
+                    <div className="detail-thumbs">
+                        {images.map((item, index) => (
+                            <button
+                                type="button"
+                                className={index === activeImageIndex ? 'thumb active' : 'thumb'}
+                                key={index}
+                                onClick={() => setActiveImageIndex(index)}
+                            >
+                                <img src={item.image} alt={`Anh ${index + 1}`} />
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className="detail-info">
+                <div className="detail-meta">
+                    <span className="chip">
+                        {dataProduct?.categoryData ? dataProduct.categoryData.value : 'Sản phẩm'}
+                    </span>
+                    <span className={quantity > 0 ? 'chip success' : 'chip warning'}>
+                        {quantity > 0 ? 'Còn hàng' : 'Hết hàng'}
+                    </span>
+                </div>
+                <h1 className="detail-title">{dataProduct?.name || 'Sản phẩm'}</h1>
+                <p className="detail-sub">{arrDetail?.description}</p>
 
-                            {arrDetail && arrDetail.productImage && arrDetail.productImage.length > 0 &&
-                                arrDetail.productImage.map((item, index) => {
-                                    if (index === 0) {
-                                        return (
+                <div className="detail-price-row">
+                    <div className="detail-price">
+                        {CommonUtils.formatter.format(arrDetail?.discountPrice || 0)}
+                    </div>
+                    <span className="detail-stock">{quantity} sản phẩm có sẵn</span>
+                </div>
 
-                                            <div onClick={() => openPreviewImage(item.image)} style={{ cursor: 'pointer' }} className="carousel-item active">
-                                                <img className="d-block w-100"
-                                                    src={item.image} alt="Ảnh bị lỗi" />
-                                            </div>
-                                        )
-                                    } else {
-                                        return (
+                <div className="detail-row">
+                    <div className="label">Size</div>
+                    <div className="size-grid">
+                        {arrDetail?.productDetailSize &&
+                            arrDetail.productDetailSize.length > 0 &&
+                            arrDetail.productDetailSize.map((item, index) => (
+                                <button
+                                    key={index}
+                                    className={item.id === activeLinkId ? 'size-pill active' : 'size-pill'}
+                                    onClick={() => handleClickBoxSize(item)}
+                                    type="button"
+                                >
+                                    {item.sizeData.value}
+                                </button>
+                            ))}
+                    </div>
+                </div>
 
-                                            <div onClick={() => openPreviewImage(item.image)} style={{ cursor: 'pointer' }} className="carousel-item ">
-                                                <img className="d-block w-100"
-                                                    src={item.image} alt="Ảnh bị lỗi" />
-                                            </div>
-                                        )
-                                    }
+                <div className="detail-row">
+                    <div className="label">Loại sản phẩm</div>
+                    <select onChange={handleSelectDetail} className="detail-select" name="type">
+                        {dataProduct &&
+                            productDetail &&
+                            productDetail.length > 0 &&
+                            productDetail.map((item, index) => (
+                                <option key={index} value={index}>
+                                    {item.nameDetail}
+                                </option>
+                            ))}
+                    </select>
+                </div>
 
-
-
-                                })
-                            }
+                <div className="detail-actions">
+                    <div className="quantity-control">
+                        <span className="label">Số lượng</span>
+                        <div className="quantity-input">
+                            <input
+                                type="number"
+                                value={quantityProduct}
+                                onChange={handleChangeQuantity}
+                                min="1"
+                            />
                         </div>
+                    </div>
+                    <div className="cta-group">
+                        <button className="btn btn-primary" onClick={handleAddShopCart}>
+                            Thêm vào giỏ hàng
+                        </button>
+                        <button className="btn btn-ghost" type="button">
+                            Yêu thích
+                        </button>
                     </div>
                 </div>
             </div>
-            <div className="col-lg-5 offset-lg-1">
-                <div className="s_product_text">
-                    <h3>{dataProduct.name}</h3>
-                    <h2>{CommonUtils.formatter.format(arrDetail.discountPrice)}</h2>
-                    <ul className="list">
-                        <li>
-                            <a className="active" href="#">
-                                <span>Loại</span> : {dataProduct && dataProduct.categoryData ? dataProduct.categoryData.value : ''}</a>
-                        </li>
-                        <li>
-                            <a href="#"> <span>Trạng thái</span> : {quantity > 0 ? 'Còn hàng' : 'Hết hàng'}</a>
-                        </li>
-                        <li>
-                            <div className="box-size">
-                                <a href="#"> <span>Size</span></a>
-                                {arrDetail && arrDetail.productDetailSize && arrDetail.productDetailSize.length > 0 &&
-                                    arrDetail.productDetailSize.map((item, index) => {
-
-                                        return (
-                                            <div onClick={() => handleClickBoxSize(item)} key={index} className={item.id === activeLinkId ? 'product-size active' : 'product-size'}>
-                                                {item.sizeData.value}
-                                            </div>
-                                        )
-
-
-                                    })
-                                }
-
-
-                            </div>
-                        </li>
-                        <li>
-                            <a href="#">{quantity} sản phẩm có sẵn</a>
-                        </li>
-                    </ul>
-                    <p>
-                        {arrDetail.description}
-                    </p>
-                    <div style={{ display: 'flex' }}>
-                        <div className="product_count">
-                            <label htmlFor="qty">Số lượng</label>
-                            {/* <input type="text" name="qty" id="sst" maxLength={12} defaultValue={1} title="Quantity:" className="input-text qty" /> */}
-                            <input type="number" value={quantityProduct} onChange={(event) => setquantityProduct(event.target.value)} min="1" />
-
-                        </div>
-                        <div className="form-group">
-                            <label style={{ fontSize: '14px', color: '#797979', fontFamily: '"Roboto",sans-serif', marginLeft: '16px' }} htmlFor="type">Loại sản phẩm</label>
-                            <select onChange={(event) => handleSelectDetail(event)} className="sorting" name="type" style={{ outline: 'none', border: '1px solid #eee', marginLeft: '16px' }}>
-                                {dataProduct && productDetail && productDetail.length > 0 &&
-                                    productDetail.map((item, index) => {
-                                        return (
-                                            <option key={index} value={index}>{item.nameDetail}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </div>
-
-
-
-
-                    <div className="card_area">
-                        <a className="main_btn" onClick={() => handleAddShopCart()}>Thêm vào giỏ</a>
-                        <a className="icon_btn" href="#">
-                            <i className="lnr lnr lnr-heart" />
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {
-                isOpen === true &&
-                <Lightbox mainSrc={imgPreview}
-                    onCloseRequest={() => setisOpen(false)}
-                />
-            }
+            {isOpen === true && (
+                <Lightbox mainSrc={imgPreview} onCloseRequest={() => setisOpen(false)} />
+            )}
         </div>
-
     );
 }
 

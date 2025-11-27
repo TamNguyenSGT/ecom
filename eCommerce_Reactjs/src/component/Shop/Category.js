@@ -1,59 +1,60 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllCodeService } from "../../services/userService";
-function Category(props) {
-    const [arrCategory, setarrCategory] = useState([]);
-    const [activeLinkId, setactiveLinkId] = useState("");
+
+function Category({ handleRecevieDataCategory }) {
+    const [categories, setCategories] = useState([]);
+    const [active, setActive] = useState("");
 
     useEffect(() => {
-        let fetchCategory = async () => {
-            let arrData = await getAllCodeService("CATEGORY");
-            if (arrData && arrData.errCode === 0) {
-                arrData.data.unshift({
-                    createdAt: null,
-                    code: "ALL",
-                    type: "CATEGORY",
-                    value: "Tất cả",
-                });
-                setarrCategory(arrData.data);
+        const fetchCategory = async () => {
+            const response = await getAllCodeService("CATEGORY");
+            if (response?.errCode === 0) {
+                const data = [
+                    {
+                        createdAt: null,
+                        code: "ALL",
+                        type: "CATEGORY",
+                        value: "Tất cả",
+                    },
+                    ...response.data,
+                ];
+                setCategories(data);
             }
         };
         fetchCategory();
     }, []);
-    let handleClickCategory = (code) => {
-        props.handleRecevieDataCategory(code);
-        setactiveLinkId(code);
+
+    const handleSelect = (code) => {
+        const next = active === code ? "" : code;
+        setActive(next);
+        handleRecevieDataCategory(next);
     };
 
     return (
-        <aside className="left_widgets p_filter_widgets">
-            <div className="l_w_title">
-                <h3>Các danh mục</h3>
+        <div className="filter-card">
+            <div className="filter-header">
+                <h3>Danh mục</h3>
+                {active && (
+                    <button type="button" onClick={() => handleSelect(active)}>
+                        Bỏ chọn
+                    </button>
+                )}
             </div>
-            <div className="widgets_inner">
-                <ul className="list">
-                    {arrCategory &&
-                        arrCategory.length > 0 &&
-                        arrCategory.map((item, index) => {
-                            return (
-                                <li
-                                    className={
-                                        item.code === activeLinkId
-                                            ? "active"
-                                            : ""
-                                    }
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() =>
-                                        handleClickCategory(item.code)
-                                    }
-                                    key={index}
-                                >
-                                    <a>{item.value}</a>
-                                </li>
-                            );
-                        })}
-                </ul>
+            <div className="filter-list">
+                {categories.map((item) => (
+                    <button
+                        type="button"
+                        key={item.code}
+                        className={`filter-chip ${
+                            active === item.code ? "active" : ""
+                        }`}
+                        onClick={() => handleSelect(item.code)}
+                    >
+                        {item.value}
+                    </button>
+                ))}
             </div>
-        </aside>
+        </div>
     );
 }
 

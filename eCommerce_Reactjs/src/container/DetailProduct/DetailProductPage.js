@@ -9,6 +9,8 @@ import ProfileProduct from "../../component/Product/ProfileProduct";
 import ReviewProduct from "../../component/Product/ReviewProduct";
 import DescriptionProduct from "../../component/Product/DescriptionProduct";
 import ProductFeature from "../../component/HomeFeature/ProductFeature";
+import "./DetailProductPage.scss";
+
 function DetailProductPage(props) {
     const [dataProduct, setDataProduct] = useState({});
     const [dataDetailSize, setdataDetailSize] = useState({});
@@ -45,36 +47,36 @@ function DetailProductPage(props) {
         }
     };
     return (
-        <div>
-            <section className="banner_area">
-                <div className="banner_inner d-flex align-items-center">
-                    <div className="container">
-                        <div className="banner_content d-md-flex justify-content-between align-items-center">
-                            <div className="mb-3 mb-md-0">
-                                <h2>Chi tiết sản phẩm</h2>
-                                <p>Thông số chi tiết về sản phẩm</p>
-                            </div>
-                            <div className="page_link">
-                                <Link to={"/"}>Trang chủ</Link>
-                                <Link to={"/shop"}>Cửa hàng</Link>
-                            </div>
+        <div className="detail-page">
+            <section className="detail-banner">
+                <div className="page-shell detail-banner__content">
+                    <p className="eyebrow">Sản phẩm</p>
+                    <div className="detail-banner__head">
+                        <div>
+                            <h1>Chi tiết sản phẩm</h1>
+                            <p>Thông tin, hình ảnh và lựa chọn size chuẩn nhất cho bạn.</p>
+                        </div>
+                        <div className="detail-breadcrumb">
+                            <Link to={"/"}>Trang chủ</Link>
+                            <span>/</span>
+                            <Link to={"/shop"}>Cửa hàng</Link>
+                            <span>/</span>
+                            <span className="current">Chi tiết</span>
                         </div>
                     </div>
                 </div>
             </section>
             <div className="product_image_area">
-                <div className="container">
+                <div className="page-shell">
                     <InfoDetailProduct
                         userId={user && user.id ? user.id : ""}
                         dataProduct={dataProduct}
                         sendDataFromInforDetail={sendDataFromInforDetail}
-                    >
-                        {" "}
-                    </InfoDetailProduct>
+                    ></InfoDetailProduct>
                 </div>
             </div>
-            <section className="product_description_area">
-                <div className="container">
+            <section className="product_description_area detail-tabs">
+                <div className="page-shell">
                     <ul className="nav nav-tabs" id="myTab" role="tablist">
                         <li className="nav-item">
                             <a
@@ -113,7 +115,7 @@ function DetailProductPage(props) {
                                 aria-controls="review"
                                 aria-selected="false"
                             >
-                                Đánh giá
+                                Đánh giá & Nhận xét
                             </a>
                         </li>
                     </ul>
@@ -132,9 +134,7 @@ function DetailProductPage(props) {
                             role="tabpanel"
                             aria-labelledby="home-tab"
                         >
-                            <DescriptionProduct
-                                data={dataProduct.contentHTML}
-                            />
+                            <DescriptionProduct data={dataProduct.contentHTML} />
                         </div>
 
                         <div

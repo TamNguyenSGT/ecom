@@ -1,73 +1,63 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import MainShop from "../../component/Shop/MainShop";
 import Category from "../../component/Shop/Category";
 import Brand from "../../component/Shop/Brand";
-
 import "./ShopPage.scss";
 
-import { Link } from "react-router-dom";
-function ShopPage(props) {
+function ShopPage() {
+    const [categoryId, setcategoryId] = useState("");
+    const [brandId, setbrandId] = useState("");
+    const heroRef = useRef(null);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    const [categoryId, setcategoryId] = useState("");
-    const [brandId, setbrandId] = useState("");
-    const myRef = useRef(null);
-    let handleRecevieDataCategory = (code) => {
-        setcategoryId(code);
-    };
-    let handleRecevieDataBrand = (code) => {
-        setbrandId(code);
-    };
     return (
-        <div>
-            <section ref={myRef} className="banner_area modern_banner">
-    <div className="banner_inner d-flex align-items-center">
-        <div className="container">
-            <div className="banner_content d-md-flex justify-content-between align-items-center">
-                <div className="mb-3 mb-md-0 text-highlight">
-                    <p className="banner_title">Danh mục cửa hàng</p>
-                    <p className="banner_subtitle">
-                        Chọn ngay sản phẩm phù hợp với bạn
-                    </p>
-                </div>
-                <div className="page_link">
-                    <Link to={"/"}>Trang chủ</Link>
-                    <Link to={"/shop"}>Cửa hàng</Link>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-            <section className="cat_product_area section_gap">
-                <div className="container">
-                    <div className="row flex-row-reverse">
-                        <MainShop
-                            categoryId={categoryId}
-                            brandId={brandId}
-                            myRef={myRef}
-                        />
-                        <div className="col-lg-3">
-                            <div className="left_sidebar_area">
-                                <Category
-                                    handleRecevieDataCategory={
-                                        handleRecevieDataCategory
-                                    }
-                                />
-                                <Brand
-                                    handleRecevieDataBrand={
-                                        handleRecevieDataBrand
-                                    }
-                                />
-                            </div>
+        <div className="shop-page">
+            <section className="shop-hero" ref={heroRef}>
+                <div className="page-shell">
+                    <div className="hero-content">
+                        <p className="eyebrow">Shop</p>
+                        <h1>Không gian mua sắm đa chiều.</h1>
+                        <p>
+                            Lọc nhanh theo danh mục, thương hiệu, mức giá và
+                            khám phá đề xuất được cá nhân hóa theo hành vi của
+                            bạn.
+                        </p>
+                        <div className="hero-meta">
+                            <span>Hơn 2.000 sản phẩm có sẵn</span>
+                            <span>10+ thương hiệu đối tác</span>
                         </div>
                     </div>
-                    {/* <Pagination amountPage={3}
-                        myFunction={{ changePage: handleChangePage, changePerPage: handleChangePage }}></Pagination> */}
+                    <div className="hero-breadcrumb">
+                        <Link to="/">Trang chủ</Link>
+                        <span>→</span>
+                        <Link to="/shop">Cửa hàng</Link>
+                    </div>
                 </div>
             </section>
-            {/* <Footer /> */}
+
+            <section className="shop-layout page-section">
+                <div className="page-shell">
+                    <div className="layout-grid">
+                        <aside className="shop-sidebar">
+                            <Category
+                                handleRecevieDataCategory={setcategoryId}
+                            />
+                            <Brand handleRecevieDataBrand={setbrandId} />
+                        </aside>
+                        <main className="shop-content">
+                            <MainShop
+                                categoryId={categoryId}
+                                brandId={brandId}
+                                myRef={heroRef}
+                            />
+                        </main>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }

@@ -1,95 +1,108 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
+import Slider from "react-slick";
 import HomeBanner from "../../component/HomeFeature/HomeBanner";
 import MainFeature from "../../component/HomeFeature/MainFeature";
-import ProductFeature from "../../component/HomeFeature/ProductFeature";
-import NewProductFeature from "../../component/HomeFeature/NewProductFeature"
-import HomeBlog from '../../component/HomeFeature/HomeBlog';
-import { getAllBanner, getProductFeatureService, getProductNewService, getNewBlog, getProductRecommendService } from '../../services/userService';
-import Slider from 'react-slick';
+import NewProductFeature from "../../component/HomeFeature/NewProductFeature";
+import HomeBlog from "../../component/HomeFeature/HomeBlog";
+import {
+    getAllBanner,
+    getProductFeatureService,
+    getNewBlog,
+    getProductRecommendService,
+} from "../../services/userService";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-function HomePage(props) {
-    const [dataProductFeature, setDataProductFeature] = useState([])
-    const [dataNewProductFeature, setNewProductFeature] = useState([])
-    const [dataNewBlog, setdataNewBlog] = useState([])
-    const [dataBanner, setdataBanner] = useState([])
-    const [dataProductRecommend, setdataProductRecommend] = useState([])
-    let settings = {
+
+function HomePage() {
+    const [dataProductFeature, setDataProductFeature] = useState([]);
+    const [dataNewBlog, setdataNewBlog] = useState([]);
+    const [dataBanner, setdataBanner] = useState([]);
+    const [dataProductRecommend, setdataProductRecommend] = useState([]);
+
+    const settings = {
         dots: false,
-        Infinity: false,
+        infinite: true,
         speed: 900,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplaySpeed: 2000,
+        autoplaySpeed: 3500,
         autoplay: true,
-        cssEase: "linear"
-    }
+        fade: true,
+        cssEase: "ease",
+    };
 
     useEffect(() => {
-        const userData = JSON.parse(localStorage.getItem('userData'));
+        const userData = JSON.parse(localStorage.getItem("userData"));
         if (userData) {
-            fetchProductRecommend(userData.id)
-
+            fetchProductRecommend(userData.id);
         }
-        fetchBlogFeature()
-        fetchDataBrand()
-        fetchProductFeature()
-        fetchProductNew()
-
+        fetchBlogFeature();
+        fetchDataBrand();
+        fetchProductFeature();
         window.scrollTo(0, 0);
-    }, [])
-    let fetchBlogFeature = async () => {
-        let res = await getNewBlog(3)
-        if (res && res.errCode === 0) {
-            setdataNewBlog(res.data)
+    }, []);
+
+    const fetchBlogFeature = async () => {
+        const res = await getNewBlog(3);
+        if (res?.errCode === 0) {
+            setdataNewBlog(res.data);
         }
-    }
-    let fetchProductFeature = async () => {
-        let res = await getProductFeatureService(6)
-        if (res && res.errCode === 0) {
-            setDataProductFeature(res.data)
+    };
+
+    const fetchProductFeature = async () => {
+        const res = await getProductFeatureService(8);
+        if (res?.errCode === 0) {
+            setDataProductFeature(res.data);
         }
-    }
-    let fetchProductRecommend = async (userId) => {
-        let res = await getProductRecommendService({
+    };
+
+    const fetchProductRecommend = async (userId) => {
+        const res = await getProductRecommendService({
             limit: 20,
-            userId: userId
-        })
-        if (res && res.errCode === 0) {
-            setdataProductRecommend(res.data)
+            userId,
+        });
+        if (res?.errCode === 0) {
+            setdataProductRecommend(res.data);
         }
-    }
-    let fetchDataBrand = async () => {
-        let res = await getAllBanner({
+    };
+
+    const fetchDataBrand = async () => {
+        const res = await getAllBanner({
             limit: 6,
             offset: 0,
-            keyword: ''
-        })
-        if (res && res.errCode === 0) {
-            setdataBanner(res.data)
+            keyword: "",
+        });
+        if (res?.errCode === 0) {
+            setdataBanner(res.data);
         }
-    }
-    let fetchProductNew = async () => {
-        let res = await getProductNewService(8)
-        if (res && res.errCode === 0) {
-            setNewProductFeature(res.data)
+    };
+
+    const featuredData = useMemo(() => {
+        if (dataProductRecommend.length > 0) {
+            return dataProductRecommend;
         }
-    }
+        return dataProductFeature;
+    }, [dataProductFeature, dataProductRecommend]);
+
     return (
-        <div>
+        <div className="home-page">
             <Slider {...settings}>
-                {dataBanner && dataBanner.length > 0 &&
-                    dataBanner.map((item, index) => {
-                        return (
-                            <HomeBanner image={item.image} name={item.name}></HomeBanner>
-                        )
-                    })
-                }
+                {dataBanner.map((item, index) => (
+                    <HomeBanner
+                        key={item.id || index}
+                        image={item.image}
+                        name={item.name}
+                        subtitle={item.description}
+                    />
+                ))}
             </Slider>
 
-            <MainFeature></MainFeature>
-            <ProductFeature title={"Gợi ý sản phẩm"} data={dataProductRecommend}></ProductFeature>
-            <NewProductFeature title="Sản phẩm mới" description="Những sản phẩm vừa ra mắt mới lạ cuốn hút người xem" data={dataNewProductFeature}></NewProductFeature>
+            <MainFeature />
+            <NewProductFeature
+                title="Sản phẩm nổi bật"
+                description="Cập nhật liên tục dựa trên hành vi mua sắm và xu hướng hiện hành."
+                data={featuredData}
+            />
             <HomeBlog data={dataNewBlog} />
         </div>
     );

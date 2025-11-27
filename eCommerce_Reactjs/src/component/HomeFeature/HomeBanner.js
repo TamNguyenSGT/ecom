@@ -1,44 +1,47 @@
 import React from "react";
-import "./HomeBanner.scss";
 import { Link } from "react-router-dom";
-
+import "./HomeBanner.scss";
 
 function HomeBanner({ image, name, title, subtitle }) {
-    // Nếu không truyền image thì lấy ảnh mặc định trong public/img/
-    const bannerImage = image ? image : "/resources/img/banner1.jpg";
+    const bannerImage = image || "/resources/img/banner1.jpg";
 
     return (
-        <section className="home_banner_area mb-40">
-            <div
-                className="box-banner"
-                style={{
-                    backgroundImage: `url(${bannerImage})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
-            >
-                <div className="banner_inner d-flex align-items-center" >
-                    <div className="container">
-                        <div className="banner_content row">
-                            <div className="col-lg-12 text-center">
-                                {/* sub heading */}
-                                <p className="sub text-uppercase">
-                                    {name || "NEW COLLECTION"}
-                                </p>
-
-                                {/* main heading */}
-                                <h2>
-                                    <span>{title || "Show"}</span> Your <br />
-                                    Personal <span>Style</span>
-                                </h2>
-
-                                {/* subtitle */}
-                                <h4>{subtitle || "Hãy đến với cửa hàng chúng tôi"}</h4>
-
-                                {/* button */}
-                                <Link className="main_btn mt-40" to="/shop">
-                                    Đến cửa hàng ngay
-                                </Link>
+        <section className="home-hero page-section">
+            <div className="page-shell">
+                <div
+                    className="hero-surface"
+                    style={{ backgroundImage: `url(${bannerImage})` }}
+                >
+                    <div className="hero-content">
+                        <span className="hero-pill">{name || "T-Shirt"}</span>
+                        <h1>
+                            <span>{title || "Phá vỡ giới hạn"}</span> phong
+                            cách làm chủ nhịp sống đô thị.
+                        </h1>
+                        <p>
+                            {subtitle ||
+                                "Bộ sưu tập mới kết hợp chất liệu tái chế, đường cắt hiện đại cùng hiệu ứng phản quang độc quyền, giúp bạn sẵn sàng cho mọi chuyển động."}
+                        </p>
+                        <div className="hero-cta">
+                            <Link className="btn-primary" to="/shop">
+                                Mua ngay
+                            </Link>
+                            <Link className="btn-ghost" to="/blog">
+                                Xem lookbook
+                            </Link>
+                        </div>
+                        <div className="hero-metrics-inline">
+                            <div>
+                                <span className="metric-label">Giao nhanh</span>
+                                <p className="metric-value">2h nội thành</p>
+                            </div>
+                            <div>
+                                <span className="metric-label">Đổi trả</span>
+                                <p className="metric-value">30 ngày</p>
+                            </div>
+                            <div>
+                                <span className="metric-label">Stylist</span>
+                                <p className="metric-value">1:1 24/7</p>
                             </div>
                         </div>
                     </div>

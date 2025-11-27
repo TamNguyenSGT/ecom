@@ -1,62 +1,86 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Header.scss";
-const TopMenu = (props) => {
-    let handleLogout = () => {
+
+const TopMenu = ({ user }) => {
+    const handleLogout = () => {
         localStorage.removeItem("userData");
         localStorage.removeItem("token");
         window.location.href = "/login";
     };
 
-    let name =
-        props.user && props.user.id
-            ? `${
-                  props.user && props.user.firstName ? props.user.firstName : ""
-              } ${props.user.lastName}`
+    const fullName =
+        user && user.id
+            ? `${user?.firstName || ""} ${user?.lastName || ""}`.trim()
             : "";
+
+    const initials =
+        fullName
+            .split(" ")
+            .filter(Boolean)
+            .map((segment) => segment[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase() || "ME";
+
+    const renderAuthLinks = () => {
+        if (user && user.id) {
+            return (
+                <>
+                    <NavLink
+                        to={`/user/detail/${user.id}`}
+                        className={({ isActive }) =>
+                            `topbar-link user-chip ${isActive ? "active" : ""}`
+                        }
+                    >
+                        <span className="chip-avatar">{initials}</span>
+                        <span>{fullName || "Tài khoản"}</span>
+                    </NavLink>
+                    <button
+                        type="button"
+                        className="topbar-link ghost"
+                        onClick={handleLogout}
+                    >
+                        Đăng xuất
+                    </button>
+                </>
+            );
+        }
+
+        return (
+            <>
+                <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                        `topbar-link ${isActive ? "active" : ""}`
+                    }
+                >
+                    Đăng nhập
+                </NavLink>
+                <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                        `topbar-link ${isActive ? "active" : ""}`
+                    }
+                >
+                    Đăng ký
+                </NavLink>
+            </>
+        );
+    };
+
     return (
-        <div className="top_menu">
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-7">
-                        <div className="float-left">
-                            <p>Điện thoại: 0335926080 </p>
-                            <p>email: nikeshop@gmail.com</p>
-                        </div>
+        <div className="app-topbar">
+            <div className="page-shell">
+                <div className="topbar-inner">
+                    <div className="topbar-info">
+                        <span>Hotline 0335 926 080</span>
+                        <span>support@ecom.studio</span>
+                        <span>Giao hàng toàn quốc</span>
                     </div>
-                    <div className="col-lg-5">
-                        <div className="float-right">
-                            <ul className="right_side">
-                                <li>
-                                    {props.user && props.user.id ? (
-                                        <NavLink
-                                            exact
-                                            to={`/user/detail/${
-                                                props.user && props.user.id
-                                                    ? props.user.id
-                                                    : ""
-                                            }`}
-                                        >
-                                            {name}
-                                        </NavLink>
-                                    ) : (
-                                        <a href="/login">Đăng nhập</a>
-                                    )}
-                                </li>
-                                <li style={{ cursor: "pointer" }}>
-                                    {props.user && props.user.id ? (
-                                        <a onClick={() => handleLogout()}>
-                                            Đăng xuất
-                                        </a>
-                                    ) : (
-                                        <a href="/login">Đăng ký</a>
-                                    )}
-                                </li>
-                                <li>
-                                    <a>VI</a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div className="topbar-actions">
+                        {renderAuthLinks()}
+                        <span className="topbar-lang">VI</span>
                     </div>
                 </div>
             </div>

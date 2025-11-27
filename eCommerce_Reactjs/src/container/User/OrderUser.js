@@ -102,7 +102,7 @@ function OrderUser(props) {
                                                 <div className='label-favorite'>
                                                     Yêu thích
                                                 </div>
-                                                <span className='label-name-shop'>Eiser shop</span>
+                                                <span className='label-name-shop'>Nike studio</span>
                                                 <div className='view-shop'>
                                                     <i className="fas fa-store"></i>
 

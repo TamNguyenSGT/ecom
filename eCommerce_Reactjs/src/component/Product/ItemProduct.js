@@ -1,40 +1,61 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { addItemCartStart } from '../../action/ShopCartAction';
-import CommonUtils from '../../utils/CommonUtils';
-import './ItemProduct.scss';
-// độ phân giải ảnh có thể làm vỡ layout
-function ItemProduct(props) {
+import React from "react";
+import { Link } from "react-router-dom";
+import CommonUtils from "../../utils/CommonUtils";
+import "./ItemProduct.scss";
 
+function ItemProduct({
+    id,
+    type = "",
+    name,
+    img,
+    price,
+    discountPrice,
+    badge,
+}) {
+    const hasDiscount =
+        discountPrice && Number(discountPrice) !== Number(price);
+    const percent =
+        hasDiscount && price
+            ? Math.round(
+                  ((Number(price) - Number(discountPrice)) / Number(price)) *
+                      100
+              )
+            : 0;
+
+    const renderPrice = () => (
+        <div className="product-price">
+            <span className="current">
+                {CommonUtils.formatter.format(
+                    hasDiscount ? discountPrice : price
+                )}
+            </span>
+            {hasDiscount && (
+                <span className="old">
+                    {CommonUtils.formatter.format(price)}
+                </span>
+            )}
+        </div>
+    );
 
     return (
-        <div className={props.type}>
-            <div style={{ cursor: 'pointer' }} className="single-product">
-                <Link to={`/detail-product/${props.id}`}>
-                    <div style={{ width: props.width, height: props.height }} className="product-img">
-                        <img className="img-fluid w-100" src={props.img} alt="" />
-                        <div className="p_icon">
-                            <a >
-                                <i className="ti-eye" />
-                            </a>
-                            <a >
-                                <i className="ti-shopping-cart" />
-                            </a>
-                        </div>
+        <div className={type}>
+            <article className="product-card">
+                <Link to={`/detail-product/${id}`} className="product-link">
+                    <div className="product-media">
+                        <img src={img} alt={name} loading="lazy" />
+                        {(badge || hasDiscount) && (
+                            <span className="product-badge">
+                                {badge || `-${percent}%`}
+                            </span>
+                        )}
                     </div>
-                    <div style={{ width: props.width, height: '99px' }} className="product-btm">
-                        <a className="d-block">
-                            <h4 >{props.name}</h4>
-                        </a>
-                        <div className="mt-3">
-                            <span className="mr-4">{CommonUtils.formatter.format(props.discountPrice)}</span>
-                            <del>{CommonUtils.formatter.format(props.price)}</del>
-                        </div>
+                    <div className="product-info">
+                        <p className="product-eyebrow">Studio curated</p>
+                        <h3>{name}</h3>
+                        {renderPrice()}
                     </div>
                 </Link>
-
-            </div>
+            </article>
         </div>
     );
 }

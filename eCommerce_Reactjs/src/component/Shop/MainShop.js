@@ -1,159 +1,185 @@
-import React, { useState, useEffect } from 'react';
-import ItemProduct from '../Product/ItemProduct';
-import { getAllProductUser } from '../../services/userService';
-import { PAGINATION } from '../../utils/constant';
-import ReactPaginate from 'react-paginate';
-import FormSearch from '../Search/FormSearch';
-function MainShop(props) {
+import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
+import ItemProduct from "../Product/ItemProduct";
+import { getAllProductUser } from "../../services/userService";
+import { PAGINATION } from "../../utils/constant";
+import FormSearch from "../Search/FormSearch";
 
-    const [dataProduct, setdataProduct] = useState([])
-    const [count, setCount] = useState('')
-    const [numberPage, setnumberPage] = useState('')
-    const [limitPage, setlimitPage] = useState(PAGINATION.pagerow)
-    const [sortPrice, setsortPrice] = useState('')
-    const [sortName, setsortName] = useState('')
-    const [offset, setoffset] = useState(0)
-    const [categoryId, setcategoryId] = useState('')
-    const [brandId, setbrandId] = useState('')
-    const [keyword, setkeyword] = useState('')
-    useEffect(() => {
+function MainShop({ categoryId, brandId, myRef }) {
+    const [dataProduct, setdataProduct] = useState([]);
+    const [count, setCount] = useState(0);
+    const [limitPage, setlimitPage] = useState(PAGINATION.pagerow);
+    const [sortPrice, setsortPrice] = useState("");
+    const [sortName, setsortName] = useState("");
+    const [offset, setoffset] = useState(0);
+    const [keyword, setkeyword] = useState("");
 
-      
-         loadProduct(limitPage, sortName, sortPrice, offset, categoryId,keyword)
-    
-    }, [])
-    useEffect(() => {
-        setcategoryId(props.categoryId)
-        setbrandId(props.brandId)
-        let fetchCategory = async () => {
-
-            let arrData = await getAllProductUser({
-
-                sortPrice: sortPrice,
-                sortName: sortName,
-                limit: limitPage,
-                offset: offset,
-                categoryId: props.categoryId,
-                brandId: props.brandId,
-                 keyword:keyword
-            })
-            if (arrData && arrData.errCode === 0) {
-                setdataProduct(arrData.data)
-                setCount(Math.ceil(arrData.count / limitPage))
-            }
+    const loadProduct = async (
+        limit,
+        sortNameValue,
+        sortPriceValue,
+        offsetValue,
+        categoryCode,
+        keywordValue,
+        brandCode
+    ) => {
+        const response = await getAllProductUser({
+            sortPrice: sortPriceValue,
+            sortName: sortNameValue,
+            limit,
+            offset: offsetValue,
+            categoryId: categoryCode,
+            brandId: brandCode,
+            keyword: keywordValue,
+        });
+        if (response?.errCode === 0) {
+            setdataProduct(response.data);
+            setCount(Math.ceil(response.count / limit));
         }
-        fetchCategory()
+    };
 
-    }, [props.categoryId, props.brandId])
+    useEffect(() => {
+        loadProduct(
+            limitPage,
+            sortName,
+            sortPrice,
+            offset,
+            categoryId,
+            keyword,
+            brandId
+        );
+    }, []);
 
+    useEffect(() => {
+        loadProduct(
+            limitPage,
+            sortName,
+            sortPrice,
+            0,
+            categoryId,
+            keyword,
+            brandId
+        );
+        setoffset(0);
+    }, [categoryId, brandId]);
 
-    let loadProduct = async (limitPage, sortName, sortPrice, offset, categoryId,keyword) => {
-        let arrData = await getAllProductUser({
+    const handleSelectLimitPage = (event) => {
+        const value = Number(event.target.value);
+        setlimitPage(value);
+        loadProduct(value, sortName, sortPrice, 0, categoryId, keyword, brandId);
+        setoffset(0);
+    };
 
-            sortPrice: sortPrice,
-            sortName: sortName,
-            limit: limitPage,
-            offset: offset,
-            categoryId: categoryId,
-            brandId: brandId,
-            keyword:keyword
+    const handleChangePage = (number) => {
+        const newOffset = number.selected * limitPage;
+        setoffset(newOffset);
+        loadProduct(
+            limitPage,
+            sortName,
+            sortPrice,
+            newOffset,
+            categoryId,
+            keyword,
+            brandId
+        );
+        myRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
-        })
-        if (arrData && arrData.errCode === 0) {
-            setdataProduct(arrData.data)
-            setCount(Math.ceil(arrData.count / limitPage))
-        }
-    }
-    let handleSelectLimitPage = async (event) => {
-
-         setlimitPage(event.target.value)
-         loadProduct(event.target.value, sortName, sortPrice, offset, categoryId,keyword)
-    }
-    let handleChangePage = async (number) => {
-        setnumberPage(number.selected)
-        loadProduct(limitPage, sortName, sortPrice, number.selected * limitPage, categoryId,keyword)
-        setoffset(number.selected * limitPage)
-        props.myRef.current.scrollIntoView()
-
-    }
-    let handleSelectSort = async (event) => {
-        let value = +event.target.value
-
+    const handleSelectSort = (event) => {
+        const value = Number(event.target.value);
         if (value === 1) {
-            loadProduct(limitPage, '', '', offset, categoryId,keyword)
+            setsortPrice("");
+            setsortName("");
+            loadProduct(limitPage, "", "", offset, categoryId, keyword, brandId);
+        } else if (value === 2) {
+            setsortPrice(true);
+            setsortName("");
+            loadProduct(limitPage, "", true, offset, categoryId, keyword, brandId);
+        } else if (value === 3) {
+            setsortPrice("");
+            setsortName(true);
+            loadProduct(limitPage, true, "", offset, categoryId, keyword, brandId);
+        }
+    };
 
+    const handleSearch = (value) => {
+        setkeyword(value);
+        loadProduct(limitPage, sortName, sortPrice, 0, categoryId, value, brandId);
+        setoffset(0);
+    };
+
+    const handleOnchangeSearch = (value) => {
+        if (value === "") {
+            setkeyword("");
+            loadProduct(
+                limitPage,
+                sortName,
+                sortPrice,
+                offset,
+                categoryId,
+                "",
+                brandId
+            );
         }
-        else if (value === 2) {
-            loadProduct(limitPage, '', true, offset, categoryId,keyword)
-            setsortPrice(true)
-            setsortName('')
-        }
-        else if (value === 3) {
-            loadProduct(limitPage, true, '', offset, categoryId,keyword)
-            setsortPrice('')
-            setsortName(true)
-        }
-    }
-    let handleSearch = (keyword) =>{
-       
-        loadProduct(limitPage, sortName, sortPrice, offset, categoryId,keyword)
-        setkeyword(keyword)
-    }
-    let handleOnchangeSearch = (keyword) =>{
-        if(keyword === ''){
-            loadProduct(limitPage, sortName, sortPrice, offset, categoryId,keyword)
-            setkeyword(keyword)
-        }
-    }
+    };
+
     return (
-        <div className="col-lg-9">
-            <div className="product_top_bar">
-                <div className="left_dorp">
-                    <select style={{ outline: 'none' }} onChange={(event) => handleSelectSort(event)} className="sorting">
-                        <option value={1}>Sắp xếp</option>
-                        <option value={2}>Theo giá tiền</option>
-                        <option value={3}>Theo tên</option>
-                    </select>
-                    <select style={{ outline: 'none' }} onChange={(event) => handleSelectLimitPage(event)} className="show">
-                        <option value={6}>Hiển thị 6</option>
-                        <option value={12}>Hiển thị 12</option>
-                        <option value={18}>Hiển thị 18</option>
-                    </select>
-                    <div style={{display:'inline-block',marginLeft:'10px',width:'300px'}}>
-                    <FormSearch title={"tên tên quần áo"} handleOnchange={handleOnchangeSearch} handleSearch={handleSearch} />
+        <div className="shop-board">
+            <div className="shop-toolbar">
+                <FormSearch
+                    title="tên hoặc mã sản phẩm"
+                    handleSearch={handleSearch}
+                    handleOnchange={handleOnchangeSearch}
+                />
+                <div className="toolbar-controls">
+                    <div className="select-field">
+                        <label>Hiển thị</label>
+                        <select value={limitPage} onChange={handleSelectLimitPage}>
+                            <option value={6}>06 sản phẩm</option>
+                            <option value={12}>12 sản phẩm</option>
+                            <option value={18}>18 sản phẩm</option>
+                        </select>
                     </div>
-                    
-                    
-                   
-                </div>
-                
-            </div>
-            <div style={{ marginBottom: '10px' }} className="latest_product_inner">
-                <div className="row">
-                    {dataProduct && dataProduct.length > 0 &&
-                        dataProduct.map((item, index) => {
-                            return (
-                                <ItemProduct id={item.id} width={"255px"} height={"254px"} type="col-lg-4 col-md-6" name={item.name} img={item.productDetail[0].productImage[0].image}
-                                    discountPrice={item.productDetail[0].discountPrice} price={item.productDetail[0].originalPrice}></ItemProduct>
-                            )
-                        })
-                    }
-
-
+                    <div className="select-field">
+                        <label>Sắp xếp</label>
+                        <select onChange={handleSelectSort}>
+                            <option value={1}>Mặc định</option>
+                            <option value={2}>Theo giá</option>
+                            <option value={3}>Theo tên</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+
+            <div className="product-grid">
+                {dataProduct.map((item) => (
+                    <ItemProduct
+                        key={item.id}
+                        id={item.id}
+                        type="product-grid-item"
+                        name={item.name}
+                        img={
+                            item.productDetail?.[0]?.productImage?.[0]?.image
+                        }
+                        discountPrice={
+                            item.productDetail?.[0]?.discountPrice || 0
+                        }
+                        price={item.productDetail?.[0]?.originalPrice || 0}
+                    />
+                ))}
+            </div>
+
             <ReactPaginate
-                previousLabel={'Quay lại'}
-                nextLabel={'Tiếp'}
-                breakLabel={'...'}
+                previousLabel={"Quay lại"}
+                nextLabel={"Tiếp"}
+                breakLabel={"..."}
                 pageCount={count}
-                marginPagesDisplayed={3}
+                marginPagesDisplayed={2}
                 containerClassName={"pagination justify-content-center"}
                 pageClassName={"page-item"}
                 pageLinkClassName={"page-link"}
                 previousLinkClassName={"page-link"}
-                nextClassName={"page-item"}
-                nextLinkClassName={"page-link"}
+                nextClassName={"page-link"}
                 breakLinkClassName={"page-link"}
                 breakClassName={"page-item"}
                 activeClassName={"active"}

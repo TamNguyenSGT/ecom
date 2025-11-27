@@ -1,52 +1,55 @@
-import React from 'react';
-function MainFeature(props) {
-  return (
-      <section className="feature-area section_gap_bottom_custom">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-3 col-md-6">
-              <div className="single-feature">
-                <div className="title">
-                  <i className="flaticon-money"></i>
-                  <h3>Mua nhiều giảm nhiều</h3>
-                </div>
-                <p>Giảm giá lên tận 50%</p>
-              </div>
-            </div>
+import React from "react";
+import "./MainFeature.scss";
 
-            <div className="col-lg-3 col-md-6">
-              <div className="single-feature">
-                <div className="title">
-                  <i className="flaticon-truck"></i>
-                  <h3>Miễn phí vận chuyển</h3>
-                </div>
-                <p>Phạm vi trong khoảng 5km</p>
-              </div>
-            </div>
+const featureData = [
+    {
+        icon: "ti-crown",
+        title: "Ưu đãi thành viên",
+        description: "Giảm thêm 15% khi bạn đạt hạng Icon mỗi tháng.",
+    },
+    {
+        icon: "ti-truck",
+        title: "Giao hàng linh hoạt",
+        description: "Trong 2h nội thành & miễn phí đơn từ 1.5 triệu.",
+    },
+    {
+        icon: "ti-headphone-alt",
+        title: "Stylist 24/7",
+        description: "Tư vấn outfit, bảo quản sneaker, lên lịch thử đồ.",
+    },
+    {
+        icon: "ti-lock",
+        title: "Thanh toán an toàn",
+        description: "Liên kết hơn 10 cổng thanh toán & ví điện tử.",
+    },
+];
 
-            <div className="col-lg-3 col-md-6">
-              <div className="single-feature">
-                <div className="title">
-                  <i className="flaticon-support"></i>
-                  <h3>Sẵn sàng hỗ trợ</h3>
+function MainFeature() {
+    return (
+        <section className="main-feature page-section">
+            <div className="page-shell">
+                <div className="section-heading">
+                    <span className="eyebrow">Experience</span>
+                    <h2>Phong cách và dịch vụ cao cấp tại một nơi.</h2>
+                    <p>
+                        Chọn lựa dễ dàng, trải nghiệm cá nhân hóa với đội ngũ
+                        stylist, vận hành bởi công nghệ realtime của chúng tôi.
+                    </p>
                 </div>
-                <p>Chỉ cần liên hệ với chúng tôi</p>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-md-6">
-              <div className="single-feature">
-                <div className="title">
-                  <i className="flaticon-blockchain"></i>
-                  <h3>An toàn thanh toán</h3>
+                <div className="feature-grid">
+                    {featureData.map((item) => (
+                        <article className="feature-card" key={item.title}>
+                            <span className="feature-icon">
+                                <i className={item.icon} />
+                            </span>
+                            <h3>{item.title}</h3>
+                            <p>{item.description}</p>
+                        </article>
+                    ))}
                 </div>
-                <p>Các cổng thanh toán uy tín</p>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-  );
+        </section>
+    );
 }
 
 export default MainFeature;

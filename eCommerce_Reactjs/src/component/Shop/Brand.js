@@ -1,52 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import { getAllCodeService } from "../../services/userService";
 
-import { getAllCodeService } from '../../services/userService';
-function Brand(props) {
+function Brand({ handleRecevieDataBrand }) {
+    const [brands, setBrands] = useState([]);
+    const [active, setActive] = useState("");
 
-
-    const [activeLinkId, setactiveLinkId] = useState('')
-    const [arrBrand, setarrBrand] = useState([])
-    let handleClickBrand = (code) => {
-        props.handleRecevieDataBrand(code)
-        setactiveLinkId(code)
-    }
     useEffect(() => {
-        let fetchBrand = async () => {
-            let arrData = await getAllCodeService('BRAND')
-            if (arrData && arrData.errCode === 0) {
-                arrData.data.unshift({
-                    createdAt: null,
-                    code: "ALL",
-                    type: "BRAND",
-                    value: "Tất cả",
-                })
-                setarrBrand(arrData.data)
+        const fetchBrand = async () => {
+            const response = await getAllCodeService("BRAND");
+            if (response?.errCode === 0) {
+                const data = [
+                    {
+                        createdAt: null,
+                        code: "ALL",
+                        type: "BRAND",
+                        value: "Tất cả",
+                    },
+                    ...response.data,
+                ];
+                setBrands(data);
             }
-        }
-        fetchBrand()
-    }, [])
+        };
+        fetchBrand();
+    }, []);
+
+    const handleSelect = (code) => {
+        const next = active === code ? "" : code;
+        setActive(next);
+        handleRecevieDataBrand(next);
+    };
+
     return (
-
-        <aside className="left_widgets p_filter_widgets">
-            <div className="l_w_title">
-                <h3>Các thương hiệu</h3>
+        <div className="filter-card">
+            <div className="filter-header">
+                <h3>Thương hiệu</h3>
+                {active && (
+                    <button type="button" onClick={() => handleSelect(active)}>
+                        Bỏ chọn
+                    </button>
+                )}
             </div>
-            <div className="widgets_inner">
-                <ul className="list">
-                    {arrBrand && arrBrand.length > 0 &&
-                        arrBrand.map((item, index) => {
-                            return (
-                                <li className={item.code === activeLinkId ? 'active' : ''} style={{ cursor: 'pointer' }} onClick={() => handleClickBrand(item.code)} key={index}>
-                                    <a >{item.value}</a>
-                                </li>
-                            )
-                        })
-                    }
-
-                </ul>
+            <div className="filter-list">
+                {brands.map((item) => (
+                    <button
+                        type="button"
+                        key={item.code}
+                        className={`filter-chip ${
+                            active === item.code ? "active" : ""
+                        }`}
+                        onClick={() => handleSelect(item.code)}
+                    >
+                        {item.value}
+                    </button>
+                ))}
             </div>
-        </aside>
-
+        </div>
     );
 }
 

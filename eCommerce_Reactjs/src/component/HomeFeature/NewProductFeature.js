@@ -1,32 +1,37 @@
-import React from 'react';
-import ItemProduct from '../Product/ItemProduct';
-import HeaderContent from '../Content/HeaderContent';
-function NewProductFeature(props) {
+import React from "react";
+import HeaderContent from "../Content/HeaderContent";
+import ItemProduct from "../Product/ItemProduct";
 
+function NewProductFeature({ title, description, data = [] }) {
     return (
-        <section className="new_product_area section_gap_top section_gap_bottom_custom">
-            <div className="container">
-                <HeaderContent mainContent={props.title}
-                    infoContent={props.description}> </HeaderContent>
-                <div className="row">
-
-                    <div className="col-lg-12 mt-5 mt-lg-0">
-                        <div className="row">
-                            {props.data && props.data.length > 0 &&
-                                props.data.map((item, index) => {
-                                    return (
-                                        <ItemProduct id={item.id} type="col-lg-3 col-md-3" name={item.name} img={item.productDetail[0].productImage[0].image}
-                                            price={item.productDetail[0].originalPrice} discountPrice={item.productDetail[0].discountPrice}>
-                                        </ItemProduct>
-                                    )
-                                })
+        <section className="new_product_area page-section">
+            <div className="page-shell">
+                <HeaderContent
+                    mainContent={title || "Sản phẩm mới"}
+                    infoContent={
+                        description ||
+                        "Những thiết kế vừa cập bến showroom tuần này."
+                    }
+                />
+                <div className="new-product-grid">
+                    {data?.map((item) => (
+                        <ItemProduct
+                            key={item.id}
+                            id={item.id}
+                            type="new-grid-item"
+                            name={item.name}
+                            img={
+                                item.productDetail?.[0]?.productImage?.[0]
+                                    ?.image
                             }
-
-
-                        </div>
-                    </div>
+                            price={item.productDetail?.[0]?.originalPrice || 0}
+                            discountPrice={
+                                item.productDetail?.[0]?.discountPrice || 0
+                            }
+                            badge="New"
+                        />
+                    ))}
                 </div>
-
             </div>
         </section>
     );
